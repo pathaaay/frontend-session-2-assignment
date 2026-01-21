@@ -45,7 +45,12 @@ const CartPage = () => {
         <div className="my-3 text-lg">
           {cartData.length > 0 ? (
             <>
-              Total price: <b>{total.toFixed(2)}</b>
+              <div className="flex items-center justify-between border-y border-gray-400 py-3">
+                <span>Total price:</span> <b>{total.toFixed(2)}</b>
+              </div>
+              <div className="flex items-center justify-between border-y border-gray-400 py-3">
+                <span>Total Products in cart:</span> <b>{cartData.length}</b>
+              </div>
             </>
           ) : (
             <>Nothing to show</>
