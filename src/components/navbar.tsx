@@ -2,6 +2,7 @@ import { MenuIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import useTheme from "../hooks/use-theme";
+import { NavLink } from "react-router";
 
 const navItems = [
   {
@@ -9,8 +10,8 @@ const navItems = [
     href: "/",
   },
   {
-    name: "About",
-    href: "/about",
+    name: "Products",
+    href: "/products",
   },
   {
     name: "Privacy Policy",
@@ -43,9 +44,9 @@ export const Navbar = () => {
                     {item.name}
                   </button>
                 ) : (
-                  <div className="text-sm text-slate-300 hover:text-slate-50 cursor-pointer hover:underline">
+                  <NavLink to={item.href} className="text-sm text-slate-300 hover:text-slate-50 cursor-pointer hover:underline">
                     {item.name}
-                  </div>
+                  </NavLink>
                 )}
               </Fragment>
             ))}
