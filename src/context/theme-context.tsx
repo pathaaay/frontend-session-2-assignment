@@ -21,6 +21,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const localTheme = localStorage.getItem("theme");
     if (localTheme) setTheme(localTheme as ThemeType);
+    else {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      if (mq.matches) setTheme("dark");
+    }
     setMounted(true);
   }, []);
 
