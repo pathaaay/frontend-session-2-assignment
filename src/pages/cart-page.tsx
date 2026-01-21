@@ -1,31 +1,12 @@
-import { useEffect, useState } from "react";
 import useProduct from "../hooks/use-products";
-import { type ProductType } from "../lib/types";
 import CartCard from "../components/cart-card";
 import { Button } from "../components/button";
 import { NavLink } from "react-router";
+import useCart from "../hooks/use-cart";
 
 const CartPage = () => {
-  const { cart, products, toggleCart } = useProduct();
-  const [cartData, setCartData] = useState<ProductType[]>([]);
-  const [total, setTotal] = useState(0);
-  useEffect(() => {
-    const tempData = products.filter(({ id: productId }) =>
-      cart.some(({ id }) => id === productId),
-    );
-
-    setCartData(
-      tempData.map((data) => ({
-        ...data,
-        qty: cart.find(({ id }) => id === data.id)!.qty,
-      })),
-    );
-  }, [cart, products]);
-
-  useEffect(() => {
-    setTotal(cartData.reduce((acc, { qty, price }) => acc + qty * price, 0));
-    return () => {};
-  }, [cartData]);
+  const { toggleCart } = useProduct();
+  const { total, cartData } = useCart();
 
   return (
     <div className="p-5 gap-2 grid grid-cols-1 sm:grid-cols-2">
@@ -68,7 +49,9 @@ const CartPage = () => {
             >
               Clear Cart
             </Button>
-            <Button className={`w-full`}>Checkout</Button>
+            <NavLink to={"/checkout"} className={`w-full`}>
+              <Button className={`w-full`}>Checkout</Button>
+            </NavLink>
           </div>
         ) : (
           <NavLink to={"/"}>
