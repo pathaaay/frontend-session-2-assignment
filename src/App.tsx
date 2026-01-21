@@ -7,6 +7,7 @@ import { ProductCard } from "./components/product-card";
 import { EditProductForm } from "./components/edit-product-form";
 import { StatsCard } from "./components/stats-card";
 import { FilterProducts } from "./components/filter-products";
+import { ThemeProvider } from "./context/theme-context";
 
 function App() {
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -24,17 +25,6 @@ function App() {
   useEffect(() => {
     handleFetchProducts();
   }, []);
-
-  const handleFetchProducts = () => {
-    const localData = localStorage.getItem("product-details") || "";
-
-    if (localData) {
-      const parsedData = JSON.parse(localData);
-      if (parsedData?.length > 0) {
-        setProducts(parsedData);
-      }
-    }
-  };
 
   useEffect(() => {
     let lowStocks = 0;
@@ -70,6 +60,17 @@ function App() {
     return () => {};
   }, [deleteProductId]);
 
+  const handleFetchProducts = () => {
+    const localData = localStorage.getItem("product-details") || "";
+
+    if (localData) {
+      const parsedData = JSON.parse(localData);
+      if (parsedData?.length > 0) {
+        setProducts(parsedData);
+      }
+    }
+  };
+
   const deleteProduct = (productId: number) => {
     const tempProducts = products.filter(({ id }) => productId !== id);
     setProducts(tempProducts);
@@ -79,7 +80,7 @@ function App() {
 
   return (
     // when we want two html tags parallel in JSX then React fragments is used.
-    <>
+    <ThemeProvider>
       <Navbar />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
         <div className="flex items-center flex-wrap gap-2 h-max">
@@ -143,7 +144,7 @@ function App() {
         )}
       </div>
       <Toaster />
-    </>
+    </ThemeProvider>
   );
 }
 
