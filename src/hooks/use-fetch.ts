@@ -9,7 +9,6 @@ const useFetch = <T>() => {
       const res = await fetch(url);
       const json = await res.json();
       setData(json);
-      console.log(url)
     } catch (error) {
       throw new Error("Error fetching products data");
     } finally {

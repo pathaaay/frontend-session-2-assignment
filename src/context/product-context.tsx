@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import type { ProductType } from "../lib/types";
+import { createContext, useEffect, useMemo, useState } from "react";
+import type { CartActions, CartType, ProductType } from "../lib/types";
 import useFetch from "../hooks/use-fetch";
 
 interface ProductContextType {
@@ -9,6 +9,8 @@ interface ProductContextType {
   deleteProductId: number | null;
   productsLoading: boolean;
   productError: boolean;
+  cart: CartType[];
+  toggleCart: (productId: number, type?: CartActions) => void;
   fetchProductsByCategory: (name: string) => void;
   searchProducts: (query: string) => void;
   setProducts: React.Dispatch<React.SetStateAction<ProductType[]>>;
@@ -24,7 +26,9 @@ const initialValue: ProductContextType = {
   deleteProductId: null,
   productsLoading: false,
   productError: false,
+  cart: [],
   setProducts: () => {},
+  toggleCart: () => {},
   setFilteredProducts: () => {},
   setEditProductId: () => {},
   setDeleteProductId: () => {},
@@ -45,6 +49,7 @@ export const ProductProvider = ({
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
   const [editProductId, setEditProductId] = useState<number | null>(null);
   const [deleteProductId, setDeleteProductId] = useState<number | null>(null);
+  const [cart, setCart] = useState<CartType[]>([]);
   const {
     getData: getProducts,
     loading: productsLoading,
@@ -65,6 +70,12 @@ export const ProductProvider = ({
     } catch (error) {
       setProductError(true);
     }
+
+    const cartLocalData = localStorage.getItem("cart-data");
+    if (cartLocalData) {
+      const parsedCartData = JSON.parse(cartLocalData);
+      setCart(parsedCartData);
+    }
   }, []);
 
   useEffect(() => {
@@ -81,6 +92,11 @@ export const ProductProvider = ({
     return () => {};
   }, [deleteProductId]);
 
+  useEffect(() => {
+    if (cart !== null) localStorage.setItem("cart-data", JSON.stringify(cart));
+    return () => {};
+  }, [cart]);
+
   const deleteProduct = (productId: number) => {
     const tempProducts = products.filter(({ id }) => productId !== id);
     setProducts(tempProducts);
@@ -89,7 +105,6 @@ export const ProductProvider = ({
   };
 
   const fetchProductsByCategory = (name: string) => {
-    console.log("fetchProductsByCategory called");
     try {
       if (name === "" || name === "all")
         getProducts("https://dummyjson.com/products");
@@ -100,12 +115,49 @@ export const ProductProvider = ({
   };
 
   const searchProducts = (query: string) => {
-    console.log("searchProducts called");
     try {
       if (query === "") getProducts("https://dummyjson.com/products");
       else getProducts(`https://dummyjson.com/products/search?q=${query}`);
     } catch (error) {
       setProductError(true);
+    }
+  };
+
+  const toggleCart = (productId: number, type: CartActions = "add") => {
+    const existingProduct = cart.find(({ id }) => id === productId);
+    if (type === "add") {
+      if (!existingProduct) {
+        setCart((prev) => [{ id: productId, qty: 1 }, ...prev]);
+      } else {
+        const newCart = cart.map((item) => {
+          if (item.id !== productId) return item;
+          else
+            return {
+              ...item,
+              qty: item.qty + 1,
+            };
+        });
+        setCart(newCart);
+      }
+    } else if (type === "remove") {
+      let newCart = cart;
+      if (existingProduct?.qty === 1) {
+        newCart = cart.filter(({ id }) => id !== productId);
+      } else {
+        newCart = cart.map((item) => {
+          if (item.id !== productId) return item;
+          else
+            return {
+              ...item,
+              qty: item.qty - 1,
+            };
+        });
+      }
+      setCart(newCart);
+    } else if (type === "remove-all") {
+      setCart((prev) => prev.filter(({ id }) => id !== productId));
+    } else {
+      setCart([]);
     }
   };
 
@@ -118,6 +170,8 @@ export const ProductProvider = ({
         filteredProducts,
         productsLoading,
         productError,
+        cart,
+        toggleCart,
         setProducts,
         setFilteredProducts,
         setEditProductId,
