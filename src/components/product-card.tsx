@@ -2,6 +2,8 @@ import type { ProductType } from "../lib/types";
 import { Button } from "./button";
 import useTheme from "../hooks/use-theme";
 import React from "react";
+import useProduct from "../hooks/use-products";
+import { MinusIcon, PlusIcon } from "lucide-react";
 
 interface ProductCardProps {
   product: ProductType;
@@ -11,9 +13,14 @@ export const ProductCard = React.memo(function ProductCard({
   product,
 }: ProductCardProps) {
   const { theme } = useTheme();
+  const { toggleCart, cart } = useProduct();
   const isPremium = () => {
     return product.price > 500 ? true : false;
   };
+
+  const isAddedtoCart = cart.find(({ id }) => id === product.id);
+
+  if (!product) return;
 
   return (
     <div
@@ -51,15 +58,43 @@ export const ProductCard = React.memo(function ProductCard({
         ))}
       </div>
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          className="flex items-center justify-center gap-2 w-full"
-        >
-          Add to Cart
-        </Button>
+        {isAddedtoCart ? (
+          <div className="flex items-center justify-between w-full gap-3">
+            <Button
+              variant="outline"
+              className="flex items-center justify-center gap-2 w-max"
+              onClick={() => toggleCart(product.id, "remove")}
+            >
+              <MinusIcon />
+            </Button>
+            <div className="bg-gray-200 px-2 p-1 text-center w-full rounded-md">
+              {isAddedtoCart.qty}
+            </div>
+            <Button
+              variant="outline"
+              className={`flex items-center justify-center gap-2 w-max ${isAddedtoCart.qty >= product.stock ? "opacity-70! cursor-not-allowed!" : ""}`}
+              title={
+                isAddedtoCart.qty >= product.stock
+                  ? "Max Quanitity reached"
+                  : ""
+              }
+              disabled={isAddedtoCart.qty >= product.stock}
+              onClick={() => toggleCart(product.id)}
+            >
+              <PlusIcon />
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            className="flex items-center justify-center gap-2 w-full"
+            onClick={() => toggleCart(product.id)}
+          >
+            Add to Cart
+          </Button>
+        )}
       </div>
 
-      
       {/* Low Stock Badge */}
       {product.stock < 5 && (
         <div className="p-0.5 px-1 text-xs absolute right-0 top-0 bg-orange-100 text-orange-500 rounded-md">
@@ -73,6 +108,11 @@ export const ProductCard = React.memo(function ProductCard({
           Premium
         </div>
       )}
+      <div
+        className={`bg-linear-60 from-orange-500 to-pink-500 text-white font-medium text-center w-max absolute -top-1 right-0 rounded-md text-xs px-1 p-0.5 transition ${isAddedtoCart ? "scale-100" : "scale-0"}`}
+      >
+        Added to cart
+      </div>
     </div>
   );
 });

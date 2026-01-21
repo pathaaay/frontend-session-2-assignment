@@ -5,11 +5,10 @@ import { Outlet } from "react-router";
 import { ProductProvider } from "./context/product-context";
 
 function App() {
-  
   return (
     <ThemeProvider>
-      <Navbar />
       <ProductProvider>
+        <Navbar />
         <Outlet />
       </ProductProvider>
       <Toaster />

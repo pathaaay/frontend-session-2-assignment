@@ -1,8 +1,9 @@
 import { MenuIcon, MoonIcon, SunIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import useTheme from "../hooks/use-theme";
 import { NavLink } from "react-router";
+import useProduct from "../hooks/use-products";
 
 const navItems = [
   {
@@ -24,8 +25,16 @@ const navItems = [
   },
 ];
 export const Navbar = () => {
-  const [isSidebarOpen, setisSidebarOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { cart } = useProduct();
+  const [isSidebarOpen, setisSidebarOpen] = useState(false);
+  const [totalCartItems, setTotalCartItems] = useState(0);
+
+  useEffect(() => {
+    const totalValue = cart.reduce((acc, { qty }) => acc + qty, 0);
+    setTotalCartItems(totalValue);
+  }, [cart]);
+
   return (
     <>
       {/* Desktop Navbar */}
@@ -44,9 +53,23 @@ export const Navbar = () => {
                     {item.name}
                   </button>
                 ) : (
-                  <NavLink to={item.href} className="text-sm text-slate-300 hover:text-slate-50 cursor-pointer hover:underline">
-                    {item.name}
-                  </NavLink>
+                  <div
+                    className={
+                      item.href === "/cart"
+                        ? "flex items-center gap-0.5 p-1 rounded  border"
+                        : ""
+                    }
+                  >
+                    <NavLink
+                      to={item.href}
+                      className="text-sm text-slate-300 hover:text-slate-50 cursor-pointer hover:underline"
+                    >
+                      {item.name}
+                    </NavLink>
+                    {item.href === "/cart" && (
+                      <div>{totalCartItems > 0 ? totalCartItems : ""}</div>
+                    )}
+                  </div>
                 )}
               </Fragment>
             ))}
