@@ -1,12 +1,14 @@
 export interface ProductCategoryType {
-  id: number;
-  name: string;
+  label: string;
+  value: string;
 }
 
 export interface ProductType {
   id: number | null;
-  name: string;
+  title: string;
   price: number;
-  stock_quantity: number;
+  stock: number;
   category: string;
+  tags: string[];
+  thumbnail:string;
 }

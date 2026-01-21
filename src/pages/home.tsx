@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { StatsCard } from "../components/stats-card";
 import useProduct from "../hooks/use-products";
+import { Button } from "../components/button";
+import { NavLink } from "react-router";
 
 const HomePage = () => {
-    const {products} = useProduct();
+  const { products } = useProduct();
 
   const [stats, setStats] = useState({
     totalProducts: 0,
@@ -19,8 +21,8 @@ const HomePage = () => {
     let totalPremiumProducts = 0;
 
     products.forEach((product) => {
-      if (product.stock_quantity < 5) lowStocks++;
-      if (product.stock_quantity === 0) totalOutOfStockProducts++;
+      if (product.stock < 5) lowStocks++;
+      if (product.stock === 0) totalOutOfStockProducts++;
       if (product.price > 500) totalPremiumProducts++;
     });
 
@@ -29,8 +31,8 @@ const HomePage = () => {
       lowStocks: lowStocks,
       totalInventoryValue:
         products.reduce(
-          (acc, { price, stock_quantity }) =>
-            acc + Number(price * stock_quantity),
+          (acc, { price, stock }) =>
+            acc + Number(price * stock),
           0,
         ) || 0,
       totalOutOfStockProducts: totalOutOfStockProducts,
@@ -41,7 +43,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
+      <div className="p-5">
         <div className="flex items-center flex-wrap gap-2 h-max">
           <StatsCard label="Total Products" value={stats.totalProducts} />
           <StatsCard label="Low Stocks" value={stats.lowStocks} />
@@ -57,6 +59,11 @@ const HomePage = () => {
             label="Total Out of Stock"
             value={stats.totalOutOfStockProducts}
           />
+        </div>
+        <div className="mt-8 flex items-center justify-center">
+          <NavLink to={"/products"}>
+            <Button>View All products</Button>
+          </NavLink>
         </div>
         {/* <div className="flex flex-col justify-start gap-2 p-2">
           {products?.length > 0 && (

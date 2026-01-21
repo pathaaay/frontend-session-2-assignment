@@ -38,7 +38,7 @@ export const EditProductForm = ({
       name: "",
       category: "",
       price: 0,
-      stock_quantity: 0,
+      stock: 0,
     },
   });
 
@@ -49,7 +49,7 @@ export const EditProductForm = ({
       reset({
         id: singleProduct.id,
         name: singleProduct.name,
-        stock_quantity: singleProduct.stock_quantity,
+        stock: singleProduct.stock,
         price: singleProduct.price,
         category: singleProduct.category,
       });
@@ -186,7 +186,7 @@ export const EditProductForm = ({
           <div>
             <Controller
               control={control}
-              name="stock_quantity"
+              name="stock"
               rules={{
                 required: "Stock Quantity is Required",
                 min: 1,
@@ -194,14 +194,14 @@ export const EditProductForm = ({
               render={({ field, fieldState }) => (
                 <>
                   <label
-                    htmlFor="stock_quantity"
+                    htmlFor="stock"
                     className={`text-sm font-medium  ${fieldState.error ? "text-red-500" : "text-slate-700"}`}
                   >
                     Stock Quantity
                   </label>
                   <input
                     {...field}
-                    id="stock_quantity"
+                    id="stock"
                     type="number"
                     className={`font-medium bg-white w-full text-md border  rounded-md px-2 p-1 ${fieldState.error ? "border-red-700 focus:outline-red-800" : "border-slate-700 focus:outline-slate-800"}`}
                     placeholder="Enter price"
@@ -210,12 +210,12 @@ export const EditProductForm = ({
               )}
             />
 
-            {errors.stock_quantity?.type == "required" && (
+            {errors.stock?.type == "required" && (
               <div className="text-xs text-red-500">
-                {errors.stock_quantity.message}
+                {errors.stock.message}
               </div>
             )}
-            {errors.stock_quantity?.type == "min" && (
+            {errors.stock?.type == "min" && (
               <div className="text-xs text-red-500">
                 Stock Quantity must be greater than 0
               </div>

@@ -5,6 +5,7 @@ import { Outlet } from "react-router";
 import { ProductProvider } from "./context/product-context";
 
 function App() {
+  
   return (
     <ThemeProvider>
       <Navbar />

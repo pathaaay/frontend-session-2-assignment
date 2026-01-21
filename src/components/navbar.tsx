@@ -14,8 +14,8 @@ const navItems = [
     href: "/products",
   },
   {
-    name: "Privacy Policy",
-    href: "/privacy-policy",
+    name: "Cart",
+    href: "/cart",
   },
   {
     name: "Contact Us",
