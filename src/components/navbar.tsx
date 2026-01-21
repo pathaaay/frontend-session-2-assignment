@@ -63,13 +63,13 @@ export const Navbar = () => {
               className={`transition-all ${theme == "dark" ? "scale-100" : "scale-0"} absolute`}
             />
           </button>
+          <button
+            onClick={() => setisSidebarOpen(true)}
+            className="md:hidden text-sm cursor-pointer border border-cyan-800  rounded-md size-10 flex items-center justify-center"
+          >
+            <MenuIcon size={20} />
+          </button>
         </div>
-        <button
-          onClick={() => setisSidebarOpen(true)}
-          className="md:hidden text-sm cursor-pointer border border-cyan-800  rounded-md size-10 flex items-center justify-center"
-        >
-          <MenuIcon size={20} />
-        </button>
       </nav>
 
       {/* Mobile Sidebar */}
