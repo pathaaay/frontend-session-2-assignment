@@ -2,6 +2,7 @@ import { Edit2Icon, TrashIcon } from "lucide-react";
 import type { ProductType } from "../lib/types";
 import { Button } from "./button";
 import { productCategories } from "../lib/constants";
+import useTheme from "../hooks/use-theme";
 
 interface ProductCardProps {
   product: ProductType;
@@ -13,6 +14,8 @@ export const ProductCard = ({
   setEditProductId,
   setDeleteProductId,
 }: ProductCardProps) => {
+  const { theme } = useTheme();
+
   const productCategory = productCategories.find(
     (cat) => cat.value == product.category,
   )?.label;
@@ -24,7 +27,7 @@ export const ProductCard = ({
   return (
     <div className={`bg-gray-100 rounded-md h-max p-4 flex flex-col gap-3 relative ${isPremium() ? "border border-sky-500":""}`}>
       <div>
-        <div className="text-lg font-medium">{product.name} </div>
+        <div className={`text-lg font-medium ${theme === "dark" ? "text-orange-500" : "text-black"}`}>{product.name} </div>
         <div className="text-xs">{productCategory}</div>
       </div>
       <div className="flex items-center justify-between">
