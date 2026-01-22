@@ -1,6 +1,7 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import type { CartActions, CartType, ProductType } from "../lib/types";
 import useFetch from "../hooks/use-fetch";
+import useAuth from "../hooks/use-auth";
 
 interface ProductContextType {
   products: ProductType[];
@@ -43,6 +44,7 @@ export const ProductProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { loggedIn } = useAuth();
   const [productError, setProductError] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -77,6 +79,10 @@ export const ProductProvider = ({
       setCart(parsedCartData);
     }
   }, []);
+
+  useEffect(() => {
+    if (!loggedIn) setCart([]);
+  }, [loggedIn]);
 
   useEffect(() => {
     if (!productsLoading && productsData?.products) {

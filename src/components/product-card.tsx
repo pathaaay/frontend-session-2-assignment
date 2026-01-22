@@ -1,9 +1,10 @@
 import type { ProductType } from "../lib/types";
 import { Button } from "./button";
 import useTheme from "../hooks/use-theme";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useProduct from "../hooks/use-products";
 import { MinusIcon, PlusIcon } from "lucide-react";
+import useAuth from "../hooks/use-auth";
 
 interface ProductCardProps {
   product: ProductType;
@@ -12,19 +13,30 @@ interface ProductCardProps {
 export const ProductCard = React.memo(function ProductCard({
   product,
 }: ProductCardProps) {
-  const { theme } = useTheme();
-  const { toggleCart, cart } = useProduct();
-  const isPremium = () => {
-    return product.price > 500 ? true : false;
-  };
-
-  const isAddedtoCart = cart.find(({ id }) => id === product.id);
-
   if (!product) return;
 
+  const { theme } = useTheme();
+  const { loggedIn, setLoginDialogOpened } = useAuth();
+  const { toggleCart, cart } = useProduct();
+  const [addToCartWhenLoggedIn, setAddToCartWhenLoggedIn] = useState(0);
+
+  useEffect(() => {
+    if (addToCartWhenLoggedIn > 0) toggleCart(addToCartWhenLoggedIn);
+    return () => {};
+  }, [loggedIn]);
+
+  const isPremium = product.price > 500 ? true : false;
+
+  const isAddedtoCart = cart.find(({ id }) => id === product.id);
+  const handleAddToCart = (productId: number) => {
+    if (!loggedIn) {
+      setAddToCartWhenLoggedIn(productId);
+      setLoginDialogOpened(true);
+    } else toggleCart(productId);
+  };
   return (
     <div
-      className={`bg-gray-100 rounded-md h-max p-4 flex flex-col gap-3 relative ${isPremium() ? "border border-sky-500" : ""}`}
+      className={`bg-gray-100 rounded-md h-max p-4 flex flex-col gap-3 relative ${isPremium ? "border border-sky-500" : ""}`}
     >
       <div>
         <div className="flex items-center gap-1">
@@ -88,7 +100,7 @@ export const ProductCard = React.memo(function ProductCard({
           <Button
             variant="outline"
             className="flex items-center justify-center gap-2 w-full"
-            onClick={() => toggleCart(product.id)}
+            onClick={() => handleAddToCart(product.id)}
           >
             Add to Cart
           </Button>
@@ -103,7 +115,7 @@ export const ProductCard = React.memo(function ProductCard({
       )}
 
       {/* Premium Product Badge */}
-      {isPremium() && (
+      {isPremium && (
         <div className="bg-linear-60 from-purple-500 to-blue-500 text-white font-medium text-center w-max absolute -top-1 left-0 right-0 rounded-md text-xs px-1 p-0.5">
           Premium
         </div>

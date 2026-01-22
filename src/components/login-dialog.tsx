@@ -2,12 +2,14 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "./button";
 import type { LoginType } from "../lib/types";
 import toast from "react-hot-toast";
-import { useEffect, useRef } from "react";
+import useAuth from "../hooks/use-auth";
 
 const LoginDialog = () => {
+  const { login, loginDialogOpened, setLoginDialogOpened } = useAuth();
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors, isDirty },
     reset,
   } = useForm<LoginType>({
@@ -17,22 +19,31 @@ const LoginDialog = () => {
     },
   });
 
-  useEffect(() => {
-    return () => {};
-  }, []);
-
   const onSubmit = (data: LoginType) => {
     try {
-      console.log({ data });
-      toast.success("Product Added successfully!");
-      //  Reset will reset the form values as well as form state
-      reset();
+      if (
+        (data.email_or_username === "ayush" ||
+          data.email_or_username === "ayush@roimaint.com") &&
+        data.password === "1234"
+      ) {
+        login();
+        toast.success("Logged in successfully!");
+        reset();
+      } else {
+        setError("email_or_username", { message: "" });
+        setError("password", { message: "Invalid email or password" });
+      }
     } catch (error) {
       toast.error(`Error adding product: ${JSON.stringify(error)}`);
     }
   };
+  if (!loginDialogOpened) return null;
   return (
     <div className="fixed inset-0 bg-black/70 z-100 flex items-center justify-center">
+      <div
+        className="absolute inset-0"
+        onClick={() => setLoginDialogOpened(false)}
+      ></div>
       <div className="bg-gray-200 z-10 shadow-xl p-5 rounded-lg w-lg flex items-center justify-center">
         <div className="flex flex-col gap-3 items-center justify-center w-full">
           <div className="text-xl font-bold">Login</div>
