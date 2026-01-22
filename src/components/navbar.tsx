@@ -11,16 +11,12 @@ const navItems = [
     href: "/",
   },
   {
-    name: "Products",
-    href: "/products",
-  },
-  {
     name: "Cart",
     href: "/cart",
   },
   {
-    name: "Contact Us",
-    href: "/contact-us",
+    name: "Contact",
+    href: "/contact",
     isButton: true,
   },
 ];

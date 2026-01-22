@@ -20,3 +20,8 @@ export interface ProductType {
 }
 
 export type CartActions = "add" | "remove" | "remove-all" | "reset-cart";
+
+export interface LoginType {
+  email_or_username: string;
+  password: string;
+}

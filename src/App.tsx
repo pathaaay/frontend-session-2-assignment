@@ -3,6 +3,7 @@ import { Navbar } from "./components/navbar";
 import { ThemeProvider } from "./context/theme-context";
 import { Outlet } from "react-router";
 import { ProductProvider } from "./context/product-context";
+import LoginDialog from "./components/login-dialog";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Outlet />
       </ProductProvider>
       <Toaster />
+      <LoginDialog />
     </ThemeProvider>
   );
 }
