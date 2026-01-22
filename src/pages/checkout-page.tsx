@@ -5,7 +5,7 @@ import useTimer from "../hooks/use-timer";
 
 const CheckoutPage = () => {
   const { total } = useCart();
-  const { formatTime, secondsLeft } = useTimer(5*60);
+  const { formatTime, secondsLeft } = useTimer(5 * 60);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const couponContainerRef = useRef<HTMLDivElement | null>(null);
   const [totalAmount, setTotalAmount] = useState(total);

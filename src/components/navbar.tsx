@@ -4,6 +4,8 @@ import { Fragment } from "react/jsx-runtime";
 import useTheme from "../hooks/use-theme";
 import { NavLink } from "react-router";
 import useProduct from "../hooks/use-products";
+import { Button } from "./button";
+import useAuth from "../hooks/use-auth";
 
 const navItems = [
   {
@@ -11,22 +13,20 @@ const navItems = [
     href: "/",
   },
   {
-    name: "Products",
-    href: "/products",
-  },
-  {
     name: "Cart",
     href: "/cart",
+    auth: true,
   },
   {
-    name: "Contact Us",
-    href: "/contact-us",
+    name: "Contact",
+    href: "/contact",
     isButton: true,
   },
 ];
 export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { cart } = useProduct();
+  const { logout, setLoginDialogOpened, loggedIn } = useAuth();
   const [isSidebarOpen, setisSidebarOpen] = useState(false);
   const [totalCartItems, setTotalCartItems] = useState(0);
 
@@ -53,23 +53,25 @@ export const Navbar = () => {
                     {item.name}
                   </button>
                 ) : (
-                  <div
-                    className={
-                      item.href === "/cart"
-                        ? "flex items-center gap-0.5 p-1 rounded  border"
-                        : ""
-                    }
-                  >
-                    <NavLink
-                      to={item.href}
-                      className="text-sm text-slate-300 hover:text-slate-50 cursor-pointer hover:underline"
+                  ((item.auth && loggedIn) || !item?.auth) && (
+                    <div
+                      className={
+                        item.href === "/cart"
+                          ? "flex items-center gap-0.5 p-1 rounded  border"
+                          : ""
+                      }
                     >
-                      {item.name}
-                    </NavLink>
-                    {item.href === "/cart" && (
-                      <div>{totalCartItems > 0 ? totalCartItems : ""}</div>
-                    )}
-                  </div>
+                      <NavLink
+                        to={item.href}
+                        className="text-sm text-slate-300 hover:text-slate-50 cursor-pointer hover:underline"
+                      >
+                        {item.name}
+                      </NavLink>
+                      {item.href === "/cart" && (
+                        <div>{totalCartItems > 0 ? totalCartItems : ""}</div>
+                      )}
+                    </div>
+                  )
                 )}
               </Fragment>
             ))}
@@ -93,6 +95,13 @@ export const Navbar = () => {
           >
             <MenuIcon size={20} />
           </button>
+          <Button
+            variant="outline"
+            className="text-white border-white"
+            onClick={() => (loggedIn ? logout() : setLoginDialogOpened(true))}
+          >
+            {loggedIn ? "Logout" : "Login"}
+          </Button>
         </div>
       </nav>
 
